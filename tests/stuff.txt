@@ -1,0 +1,36 @@
+    setTimeout(() => {
+        
+      setAnalyzing(false);
+      const result: ResumeAnalysis = {
+        overallScore: 87,
+        atsScore: 93,
+        formattingScore: 94,
+        keywordScore: 81,
+        impactScore: 89,
+        grade: "A",
+        strengths: [
+          "Clean formatting and consistent font usage detected.",
+          "Contact information is clearly visible at the top.",
+        ],
+        weaknesses: [
+          "Summary section is too long — keep it under 3 sentences.",
+          "Missing a dedicated skills section for ATS parsing.",
+        ],
+        grammarIssues: [
+          {
+            original: "Managed a team of developer",
+            suggestion: "Managed a team of developers",
+            context: "Managed a team of developer to deliver projects on time.",
+          },
+        ],
+        keywordSuggestions: ["agile", "CI/CD", "microservices", "cloud computing"],
+        formattingTips: [
+          "Add more quantifiable achievements to your experience section.",
+          "Use bullet points consistently across all sections.",
+        ],
+        overallFeedback:
+          "Good foundation, but there's room for improvement. Focus on adding measurable achievements and industry-specific keywords.",
+      };
+      setAnalysis(result);
+      router.push('/results');
+    }, 2500);
