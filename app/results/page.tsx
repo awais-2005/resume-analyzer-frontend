@@ -370,12 +370,12 @@ export default function ResultsPage() {
                             <span className={`text-xs px-2 py-0.5 rounded-full border font-medium capitalize ${severityBadge}`}>
                               {issue.severity}
                             </span>
-                            <span className="text-gray-400 text-xs">{issue.context}</span>
+                            <ApplyToggle apply={issue.apply} onToggle={() => toggleApply("grammarIssues", i)} />
                           </div>
+                          <span className="text-gray-400 text-xs">{issue.context}</span>
                           <span className="line-through text-red-500 bg-red-50 border border-red-100 rounded-md py-1.5 px-3">{issue.original}</span>
                           <span className="text-emerald-700 font-medium bg-emerald-50 border border-emerald-200 rounded-md py-1.5 px-3">{issue.suggestion}</span>
                         </div>
-                        <ApplyToggle apply={issue.apply} onToggle={() => toggleApply("grammarIssues", i)} />
                       </div>
                     </div>
                   );
@@ -442,7 +442,7 @@ export default function ResultsPage() {
                   >
                     <div className="flex flex-col items-start justify-between gap-3">
                       <ApplyToggle apply={flag.apply} onToggle={() => toggleApply("redFlags", i)} />
-                      <div className="flex flex-col gap-1 text-sm w-full -mt-4">
+                      <div className="flex flex-col gap-1 text-sm w-full -mt-2">
                         <span className="text-red-600 font-semibold">{flag.issue}</span>
                         <span className="text-gray-600">{flag.impact}</span>
                         <span className="text-emerald-700 font-medium mt-1">Fix: {flag.fix}</span>
