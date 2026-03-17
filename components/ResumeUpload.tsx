@@ -64,7 +64,7 @@ export default function ResumeUpload({ onAnalysisComplete }: ResumeUploadProps) 
       console.log("Returning File not found.");
       return;
     };
-    let mocktest = false;
+    let mocktest = true;
 
     if (!mocktest) {
       // Shows loading...
@@ -107,7 +107,7 @@ export default function ResumeUpload({ onAnalysisComplete }: ResumeUploadProps) 
         router.push('/results');
         setAnalyzing(false);
         setButtonText("Analyze Resume");
-      }, 500);
+      }, 1000);
     }
   };
 

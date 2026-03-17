@@ -1,5 +1,5 @@
     setTimeout(() => {
-        
+
       setAnalyzing(false);
       const result: ResumeAnalysis = {
         overallScore: 87,
@@ -34,3 +34,115 @@
       setAnalysis(result);
       router.push('/results');
     }, 2500);
+
+
+
+    if (mocktest) {
+        // Mock test flow
+        setTimeout(() => {
+          localStorage.setItem("polishSummary", JSON.stringify(mockPolishSummary));
+          localStorage.setItem("docxBuffer", JSON.stringify(mockDocxBuffer));
+          setLoading(false);
+        }, 1000);
+      }
+
+      else {
+        // Get resume content from localStorage
+        resumeContent = resumeContent || localStorage.getItem("resumeContent") || "";
+        if (!resumeContent) {
+          setError("Resume content not found.");
+          setLoading(false);
+          return;
+        }
+
+        const { generateImprovedResume } = await import("@/app/utils/serverRequests");
+        const response = await generateImprovedResume(resumeContent, analysis);
+        if (!response) {
+          console.log("No response received from server.");
+          throw new Error("No response received from server.");
+        }
+        // Store polishSummary and docxBuffer in localStorage
+        localStorage.setItem("polishSummary", JSON.stringify(response.polishSummary));
+        localStorage.setItem("docxBuffer", JSON.stringify(response.buffer.data));
+      }
+
+
+const mocktest = false;
+
+    const resumeContent = typeof window !== "undefined" ? localStorage.getItem("resumeContent") : null;
+    const analysisStr = typeof window !== "undefined" ? localStorage.getItem("analysis") : null;
+    const analysis = analysisStr ? JSON.parse(analysisStr) : null;
+
+################################################################################################
+
+    
+    const getSummary = useCallback((): PolishSummary | null => {
+        const str = localStorage.getItem('polishSummary');
+        if (!str) return null;
+        try {
+            return JSON.parse(str);
+        } catch (err) {
+            console.log("Could not parse summary from localStorage.", err);
+            return null;
+        }
+    }, []);
+
+    const [polishSummary, setPolishSummary] = useState<PolishSummary | null>(() => getSummary());
+    const [docxBuffer, setDocxBuffer] = useState<ArrayBuffer | null>(() => getBuffer());
+    const [loading, setLoading] = useState(true);
+
+
+    const getNewResumeFromServer = useCallback(async () => {
+
+        if (!resumeContent && !analysis) {
+            setLoading(false);
+            return;
+        }
+
+        const response = await generateImprovedResume(resumeContent as string, analysis);
+        if (!response) {
+            console.log("No response received from server.");
+            throw new Error("No response received from server.");
+        }
+        // Store polishSummary and docxBuffer in localStorage
+        localStorage.setItem("polishSummary", JSON.stringify(response.polishSummary));
+        localStorage.setItem("docxBuffer", JSON.stringify(response.buffer.data));
+        setDocxBuffer(getBuffer(response.buffer.data));
+        setPolishSummary(response.polishSummary);
+        setLoading(false);
+    }, [analysis, resumeContent, getBuffer]);
+
+
+                                    DOWNLOAD PAGE
+
+    useEffect(() => {
+        setLoading(true);
+        if (mocktest) {
+            // Mock test flow
+            setTimeout(() => {
+                localStorage.setItem("polishSummary", JSON.stringify(mockPolishSummary));
+                localStorage.setItem("docxBuffer", JSON.stringify(mockDocxBuffer));
+                setLoading(false); // For infinite loading... to test loading animation
+            }, 10000);
+        }
+
+        else {
+            // Get resume content from localStorage
+            getNewResumeFromServer();
+        }
+    }, [getNewResumeFromServer, mocktest]);
+
+
+    // const polishSummary: PolishSummary | null = useMemo(() => {
+    //     const summaryStr = typeof window !== "undefined" ? localStorage.getItem("polishSummary") : null;
+    //     return summaryStr ? JSON.parse(summaryStr) : null;
+    // }, []);
+
+    // const docxBuffer: ArrayBuffer | null = useMemo(() => {
+    //     const bufferStr = typeof window !== "undefined" ? localStorage.getItem("docxBuffer") : null;
+    //     if (bufferStr) {
+    //         const arr = JSON.parse(bufferStr);
+    //         return new Uint8Array(arr).buffer;
+    //     }
+    //     return null;
+    // }, []);

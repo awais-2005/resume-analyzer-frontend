@@ -18,5 +18,7 @@ export const useAnalysis = create<AnalysisState>((set) => ({
 
 export const useResumeContent = create<ResumeContentState>((set) => ({
   resumeContent: "",
-  setResumeContent: (content) => set({ resumeContent: content }),
+  setResumeContent: (content) => {
+    return set({ resumeContent: content })
+  },
 }));

@@ -13,8 +13,8 @@ function ApplyToggle({ apply, onToggle }: { apply: boolean; onToggle: () => void
     <button
       onClick={onToggle}
       title={apply ? "Approved — click to undo" : "Click to approve this suggestion"}
-      className={`flex items-center ml-auto gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold
-        border transition-all duration-200 shrink-0 select-none
+      className={`flex items-center ml-auto gap-1.5 px-2.5 py-1 rounded-full text-[0.65rem] sm:text-xs font-semibold
+        border transition-all duration-200 shrink-0 select-none z-50
         ${apply
           ? "bg-emerald-50 border-emerald-300 text-emerald-700 shadow-sm"
           : "bg-gray-50 border-gray-200 text-gray-400 hover:border-emerald-300 hover:text-emerald-600 hover:bg-emerald-50"
@@ -69,8 +69,6 @@ export default function ResultsPage() {
   useEffect(() => {
     if (result) localStorage.setItem("result", JSON.stringify(result));
   }, [result]);
-
-  console.log("Current result state:", result);
 
   // Rehydrate from localStorage
   useEffect(() => {
@@ -278,7 +276,7 @@ export default function ResultsPage() {
                 ))}
               </ul>
             </div>
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+            {result.weaknesses.length > 0 && (<div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
               <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-red-500" /> Weaknesses
               </h3>
@@ -292,7 +290,7 @@ export default function ResultsPage() {
                   </li>
                 ))}
               </ul>
-            </div>
+            </div>)}
           </div>
 
           {/* Recruiter Verdict */}

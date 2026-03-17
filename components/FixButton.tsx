@@ -6,41 +6,38 @@ import { MdAutoFixHigh } from "react-icons/md";
 import { Spinner } from "./Spinner";
 
 import React from "react";
+import { mock } from "node:test";
+import { mockDocxBuffer, mockPolishSummary } from "@/tests/mock";
 
 export function FixButton() {
   const { analysis } = useAnalysis() as { analysis: ResumeAnalysis };
-  let { resumeContent } = useResumeContent() as { resumeContent: string };
   const [loading, setLoading] = React.useState(false);
   const router = require("next/navigation").useRouter();
   const [error, setError] = React.useState<string | null>(null);
 
+  const navigateToDownload = () => {
+    try {
+      localStorage.removeItem('buffer');
+      localStorage.removeItem('summary');
+      router.push("/download");
+      setLoading(false);
+    } catch (err) {
+      console.error("Error navigating to download page:", err);
+      setError("Failed to navigate to download page. Please try again.");
+      setLoading(false);
+    }
+  }
+
   const handleClick = async () => {
-    if (!analysis) return;
+
+    if (!analysis) {
+      setError("No analysis data available to fix the resume.");
+      return;
+    }
+
     setLoading(true);
     setError(null);
-    try {
-      // Get resume content from localStorage
-      resumeContent = resumeContent || localStorage.getItem("resumeContent") || "";
-      if (!resumeContent) {
-        setError("Resume content not found.");
-        setLoading(false);
-        return;
-      }
-      const { generateImprovedResume } = await import("@/app/utils/serverRequests");
-      const response = await generateImprovedResume(resumeContent, analysis);
-      console.log("Response for generating docx:", response);
-      if (!response) {
-        console.log("No response received from server.");
-        throw new Error("No response received from server.");
-      }
-      // Store polishSummary and docxBuffer in localStorage
-      localStorage.setItem("polishSummary", JSON.stringify(response.polishSummary));
-      localStorage.setItem("docxBuffer", JSON.stringify(response.buffer.data));
-      router.push("/download");
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to fix resume.");
-    }
-    setLoading(false);
+    setTimeout(navigateToDownload, 2000); // Simulate loading time
   };
 
   const action = {

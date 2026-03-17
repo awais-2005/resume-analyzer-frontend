@@ -16,11 +16,12 @@ export interface IApiError {
 
 export interface SummaryAndBufferResponse {
     polishSummary: PolishSummary;
-    buffer: DocxBuffer;
+    buffer: ResumeBuffer;
 }
 
-export interface DocxBuffer {
+export interface ResumeBuffer {
     type: 'Buffer';
+    mimeType: string;
     data: number[];
 }
 

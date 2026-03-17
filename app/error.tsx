@@ -54,8 +54,7 @@ export default function Error({
             Unexpected Error
           </h2>
           <p className="mt-3 text-gray-600 leading-relaxed">
-            We encountered an issue while processing your request. 
-            This is likely temporary — please try again.
+            {error.message || "An unexpected error has occurred. Please try again later."}
           </p>
 
           {/* Error digest for debugging */}

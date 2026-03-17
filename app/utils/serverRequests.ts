@@ -8,14 +8,12 @@ async function parseResponse<T>(response: Response): Promise<IApiResponse<T>> {
 
 export async function fetchData<T>(url: string, formData: FormData): Promise<IApiResponse<T>> {
 
-    console.log("Server:", process.env.NEXT_PUBLIC_SERVER_URL);
     let response;
     try {
         response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}${url}`, {
             method: 'POST',
             body: formData,
         });
-        console.log("API called passed.");
     } catch (error) {
         console.log("API called Failed. Error:", error);
         if (error instanceof Error) {
