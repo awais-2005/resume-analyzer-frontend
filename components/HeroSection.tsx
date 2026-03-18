@@ -27,10 +27,10 @@ export default function HeroSection() {
               Analyze My Resume
             </a>
             <a
-              href="#how-it-works"
-              className="bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 px-8 py-3.5 rounded-xl text-base font-semibold transition-all"
+              href="/create"
+              className="bg-white hover:bg-emerald-50 text-emerald-700 border border-emerald-200 px-8 py-3.5 rounded-xl text-base font-semibold transition-all"
             >
-              See How It Works
+              Create New Resume
             </a>
           </div>
 

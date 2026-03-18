@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Poppins } from "next/font/google";
 import "./globals.css";
+import SplashScreen from "@/components/SplashScreen";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -18,6 +19,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body
         className={`${poppins.variable} font-sans bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100`}
       >
+        <SplashScreen />
         {children}
       </body>
     </html>

@@ -3,6 +3,7 @@
 import MinimalNavBar from "@/components/MinimalNavBar";
 import { LoadingResume2 } from "@/components/LoadingResume"
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { PolishSummary } from "../types/Resume";
 import { generateImprovedResume } from "../utils/serverRequests";
 import { useAnalysis, useResumeContent } from "../context/AnalysisContext";
@@ -12,6 +13,8 @@ import { mockDocxBuffer, mockPolishSummary } from "@/tests/mock";
 export default function DownloadPage() {
 
     const mockTest = true;
+    const searchParams = useSearchParams();
+    const templateId = searchParams.get("template") || "tmp2";
 
     const getResumeBuffer = useCallback((): ResumeBuffer | null => {
         if (typeof window === "undefined") return null;
