@@ -14,7 +14,7 @@ export function FixButton() {
         bg-emerald-600 hover:bg-emerald-700 text-white
         shadow-lg shadow-emerald-200 hover:shadow-xl hover:shadow-emerald-300
         transition-all duration-300 ease-in-out
-        fixed bottom-8 right-8 z-50"
+        fixed bottom-8 right-8 z-999"
     >
       <MdAutoFixHigh className="w-4 h-4" />
       <span className="text-sm font-semibold">Fix Resume</span>
