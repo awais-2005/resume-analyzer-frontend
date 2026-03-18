@@ -7,14 +7,14 @@ import MinimalNavBar from "@/components/MinimalNavBar";
 
 const templates = [
   {
-    id: "tmp1",
+    id: "temp1",
     name: "Modern Professional",
-    image: "/templates/tmp1.jpg",
+    image: "/templates/temp1.jpg",
   },
   {
-    id: "tmp2",
+    id: "temp2",
     name: "Classic Elegant",
-    image: "/templates/tmp2.jpg",
+    image: "/templates/temp2.jpg",
   },
   {
     id: "temp3",
@@ -31,6 +31,11 @@ const templates = [
     name: "Executive Premium",
     image: "/templates/temp6.jpg",
   },
+  {
+    id: "temp7",
+    name: "Tech Focused",
+    image: "/templates/temp7.jpg",
+  }
 ];
 
 export default function FixTemplatePage() {

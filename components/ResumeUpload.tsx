@@ -64,7 +64,7 @@ export default function ResumeUpload({ onAnalysisComplete }: ResumeUploadProps) 
       console.log("Returning File not found.");
       return;
     };
-    let mocktest = true;
+    let mocktest = false;
 
     if (!mocktest) {
       // Shows loading...

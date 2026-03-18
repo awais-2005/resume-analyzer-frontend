@@ -12,9 +12,9 @@ import { mockDocxBuffer, mockPolishSummary } from "@/tests/mock";
 
 export default function DownloadPage() {
 
-    const mockTest = true;
+    const mockTest = false;
     const searchParams = useSearchParams();
-    const templateId = searchParams.get("template") || "tmp2";
+    const templateId = searchParams.get("template") || "temp3";
 
     const getResumeBuffer = useCallback((): ResumeBuffer | null => {
         if (typeof window === "undefined") return null;
@@ -69,22 +69,19 @@ export default function DownloadPage() {
             }
             setLoading(true);
             start.current = Date.now();
-            const res = await generateImprovedResume(resumeContent, analysis);
+            const res = await generateImprovedResume(resumeContent, analysis, templateId);
+            if (!res) throw new Error(`something went wrong. look at response: ${res}`);
             setPolishSummary(res.polishSummary);
             setResumeBuffer(res.buffer);
             setLoading(false);
             console.log("Time taken:", Date.now() - start.current);
         })();
-    }, [analysis, mockTest, resumeContent]);
+    }, [analysis, mockTest, resumeContent, templateId]);
 
-    const downloadDocx = () => {
+    const downloadPDF = () => {
         if (!resumeBuffer) return;
-        let blob;
-        if (resumeBuffer.mimeType === 'docx') {
-            blob = new Blob([new Uint8Array(resumeBuffer.data)], { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
-        } else if (resumeBuffer.mimeType === 'pdf') {
-            blob = new Blob([Buffer.from(resumeBuffer.data).buffer], { type: "application/pdf" });
-        }
+
+        const blob = new Blob([Buffer.from(resumeBuffer.data).buffer], { type: "application/pdf" });
 
         if (!blob) {
             console.log('Blob is undefined or null BLOB =', blob);
@@ -112,7 +109,7 @@ export default function DownloadPage() {
                         <p className="text-gray-700 mb-6">{loading ? "Your resume is being generated. Please Wait!" : "Your resume has been polished and is ready for download."}</p>
                         <button
                             className="px-6 py-3 rounded-lg bg-emerald-600 text-white font-bold text-lg shadow hover:bg-emerald-700 transition"
-                            onClick={downloadDocx}
+                            onClick={downloadPDF}
                             disabled={loading}
                         >
                             {loading ? "Generating Resume..." : "Download"}

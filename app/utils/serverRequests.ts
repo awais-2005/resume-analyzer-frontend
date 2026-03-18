@@ -14,6 +14,11 @@ export async function fetchData<T>(url: string, formData: FormData): Promise<IAp
             method: 'POST',
             body: formData,
         });
+        if (!response.ok) {
+            const errorData = await parseResponse<T>(response);
+            console.log("API call failed. Response:", errorData);
+            throw new Error(errorData.message || `API call to ${url} failed with status ${response.status}`);
+        }
     } catch (error) {
         console.log("API called Failed. Error:", error);
         if (error instanceof Error) {
@@ -41,10 +46,11 @@ export async function analyzeResume(resumeContent: string): Promise<ResumeAnalys
     return response.data;
 }
 
-export async function generateImprovedResume(resumeContent: string, analysis: ResumeAnalysis): Promise<SummaryAndBufferResponse> {
+export async function generateImprovedResume(resumeContent: string, analysis: ResumeAnalysis, templateId: string): Promise<SummaryAndBufferResponse> {
     const formData = new FormData();
     formData.append("resumeContent", resumeContent);
     formData.append("analysis", JSON.stringify(analysis));
+    formData.append("templateId", templateId);
     const response = await fetchData<SummaryAndBufferResponse>("/resume/generate", formData);
 
     /*
