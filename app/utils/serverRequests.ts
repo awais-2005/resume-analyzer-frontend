@@ -10,14 +10,15 @@ export async function fetchData<T>(url: string, formData: FormData): Promise<IAp
 
     let response;
     try {
+        console.log(`Making API call to ${process.env.NEXT_PUBLIC_SERVER_URL}${url}`);
         response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}${url}`, {
             method: 'POST',
             body: formData,
         });
         if (!response.ok) {
-            const errorData = await parseResponse<T>(response);
+            const errorData = await response.json();
             console.log("API call failed. Response:", errorData);
-            throw new Error(errorData.message || `API call to ${url} failed with status ${response.status}`);
+            throw new Error(`API call to ${url} failed with status ${response.status}, object: ${JSON.stringify(errorData)}`);
         }
     } catch (error) {
         console.log("API called Failed. Error:", error);
