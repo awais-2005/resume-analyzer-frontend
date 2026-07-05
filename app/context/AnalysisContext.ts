@@ -1,9 +1,9 @@
 import { create } from "zustand";
-import { ResumeAnalysis } from "../types/ResumeAnalysis";
+import { ResumeAnalysisWithHistory } from "../types/ResumeAnalysis";
 
 interface AnalysisState {
-  analysis: ResumeAnalysis | null;
-  setAnalysis: (analysis: ResumeAnalysis) => void;
+  analysis: ResumeAnalysisWithHistory | null;
+  setAnalysis: (analysis: ResumeAnalysisWithHistory) => void;
 }
 
 interface ResumeContentState {

@@ -63,7 +63,6 @@ export default function ResultsPage() {
   const [result, setResult] = useState<ResumeAnalysis | null>(
     useAnalysis((state) => state.analysis)
   );
-  const resumeContent = useResumeContent((state) => state.resumeContent);
 
   // Persist to localStorage
   useEffect(() => {
@@ -74,7 +73,13 @@ export default function ResultsPage() {
   useEffect(() => {
     const str = localStorage.getItem("result");
     if (!result && str) {
-      try { setResult(JSON.parse(str)); } catch { /* ignore */ }
+      try {
+        const parsed = JSON.parse(str);
+        setResult(parsed);
+        // also restore resumeContent into resume content store if available
+        const setResumeContent = useResumeContent.getState().setResumeContent;
+        if (parsed?.resumeContent) setResumeContent(parsed.resumeContent);
+      } catch { /* ignore */ }
     }
   }, [result]);
 

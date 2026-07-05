@@ -1,4 +1,5 @@
 export interface ResumeAnalysis {
+  title: string;
   overallScore: number;
   atsScore: number;
   formattingScore: number;
@@ -99,3 +100,9 @@ export interface ResumePolishContext {
   redFlags: RedFlag[];
   candidatePersona: CandidatePersona;
 }
+
+
+export type ResumeAnalysisWithHistory = ResumeAnalysis & {
+  historyId?: string;
+  resumeContent?: string;
+};

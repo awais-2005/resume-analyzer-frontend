@@ -5,18 +5,18 @@ import MinimalNavBar from "@/components/MinimalNavBar";
 
 const templates = [
   {
-    id: "tmp1",
+    id: "temp1",
     name: "Modern Professional",
     description: "Clean and contemporary design with a focus on readability and modern aesthetics. Perfect for tech and creative roles.",
-    image: "/templates/tmp1.jpg",
+    image: "/templates/temp1.jpg",
     features: ["Profile picture support", "Two-column layout", "Skills highlight"],
     requiresProfileImage: true,
   },
   {
-    id: "tmp2",
+    id: "temp2",
     name: "Classic Elegant",
     description: "Timeless design with a traditional layout. Ideal for conservative industries and senior positions.",
-    image: "/templates/tmp2.jpg",
+    image: "/templates/temp2.jpg",
     features: ["Single-column layout", "Traditional formatting", "Professional look"],
     requiresProfileImage: false,
   },
@@ -95,7 +95,7 @@ export default function CreateResumePage() {
                   fill
                   className="object-cover"
                 />
-                
+
                 {/* Hover Overlay with Button */}
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
                   <Link

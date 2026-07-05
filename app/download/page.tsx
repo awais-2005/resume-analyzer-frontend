@@ -68,13 +68,18 @@ export default function DownloadPage() {
                 return;
             }
             setLoading(true);
-            start.current = Date.now();
-            const res = await generateImprovedResume(resumeContent, analysis, templateId);
-            if (!res) throw new Error(`something went wrong. look at response: ${res}`);
-            setPolishSummary(res.polishSummary);
-            setResumeBuffer(res.buffer);
-            setLoading(false);
-            console.log("Time taken:", Date.now() - start.current);
+            try {
+                start.current = Date.now();
+                const res = await generateImprovedResume(resumeContent, analysis, templateId);
+                if (!res) throw new Error(`something went wrong. look at response: ${res}`);
+                setPolishSummary(res.polishSummary);
+                setResumeBuffer(res.buffer);
+                console.log("Time taken:", Date.now() - start.current);
+            } catch (error) {
+                console.error("Failed to generate improved resume:", error);
+            } finally {
+                setLoading(false);
+            }
         })();
     }, [analysis, mockTest, resumeContent, templateId]);
 

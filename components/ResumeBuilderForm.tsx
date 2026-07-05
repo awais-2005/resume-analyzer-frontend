@@ -43,6 +43,7 @@ const emptyProject = {
   description: "",
   toolsUsed: "",
   link: "",
+  github: "",
   dates: "",
   highlights: [""],
   impact: "",
@@ -603,14 +604,14 @@ export default function ResumeBuilderForm({
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-gray-500 uppercase mb-1">Tech Stack</label>
-                        <div className="flex gap-2">
-                          {["Leadership", "Agile", "Strategy"].map((tech) => (
-                            <span key={tech} className="px-2 py-1 bg-emerald-100 text-emerald-700 text-xs rounded-md">
-                              {tech}
-                            </span>
-                          ))}
-                        </div>
+                        <label className="block text-xs font-medium text-gray-500 uppercase mb-1">Tech Stack / Tools</label>
+                        <input
+                          type="text"
+                          value={proj.toolsUsed || ""}
+                          onChange={(e) => updateProject(index, "toolsUsed", e.target.value)}
+                          placeholder="React, Node.js, Tailwind"
+                          className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-emerald-500"
+                        />
                       </div>
                       <div className="sm:col-span-2">
                         <label className="block text-xs font-medium text-gray-500 uppercase mb-1">Description</label>
@@ -636,9 +637,9 @@ export default function ResumeBuilderForm({
                         <label className="block text-xs font-medium text-gray-500 uppercase mb-1">GitHub Repository</label>
                         <input
                           type="text"
-                          value={proj.link || ""}
-                          onChange={(e) => updateProject(index, "link", e.target.value)}
-                          placeholder="project-link.com/details"
+                          value={proj.github || ""}
+                          onChange={(e) => updateProject(index, "github", e.target.value)}
+                          placeholder="github.com/username/repo"
                           className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-emerald-500"
                         />
                       </div>

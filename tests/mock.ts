@@ -2,6 +2,7 @@ import { PolishSummary } from "@/app/types/Resume";
 import { ResumeAnalysis } from "@/app/types/ResumeAnalysis";
 
 export const mockATSAnalysis: ResumeAnalysis = {
+  title: "Backend Developer Resume Analysis",
   overallScore: 78,
   atsScore: 82,
   formattingScore: 74,

@@ -1,8 +1,8 @@
 "use client";
 import { useAnalysis, useResumeContent } from "@/app/context/AnalysisContext";
 import { IApiResponse } from "@/app/types/Api";
-import { ResumeAnalysis } from "@/app/types/ResumeAnalysis";
-import { analyzeResume, fetchData, getResumeContent } from "@/app/utils/serverRequests";
+import { ResumeAnalysisWithHistory } from "@/app/types/ResumeAnalysis";
+import { analyzeResume } from "@/app/utils/serverRequests";
 import { mockATSAnalysis, mockResumeContent } from "@/tests/mock";
 import { useRouter } from "next/navigation";
 import { useState, useRef, DragEvent, ChangeEvent } from "react";
@@ -10,7 +10,7 @@ import { UploadZone } from "./UploadZone";
 import { AnalyzeButton } from "./AnalyzeButton";
 
 interface ResumeUploadProps {
-  onAnalysisComplete?: (result: ResumeAnalysis) => void;
+  onAnalysisComplete?: (result: ResumeAnalysisWithHistory) => void;
 }
 
 export default function ResumeUpload({ onAnalysisComplete }: ResumeUploadProps) {
@@ -61,41 +61,26 @@ export default function ResumeUpload({ onAnalysisComplete }: ResumeUploadProps) 
 
   const handleAnalyze = async () => {
     if (!file) {
-      console.log("Returning File not found.");
       return;
     };
     let mocktest = false;
 
     if (!mocktest) {
-      // Shows loading...
-      setAnalyzing(true);
-
-      let resumeContent: string | undefined;
-      try {
-        setButtonText("Getting Resume Content...");
-        resumeContent = await getResumeContent(file);
-      } catch (err) {
-        setAnalyzing(false);
-        setButtonText("Analyze Resume");
-        console.log("ERROR:", err);
-        const message = err instanceof Error ? err.message : "Failed to upload resume. Please try again.";
-        router.push(`/error-page?message=${encodeURIComponent(message)}`);
-        return;
-      }
+      setAnalyzing(true); // For loading state
 
       try {
-        if (!resumeContent) throw new Error("Resume content not found.");
 
         setButtonText("Analyzing Resume...");
-        const analysis = await analyzeResume(resumeContent);
+        const analysis = await analyzeResume(file);
         setAnalysis(analysis);
-        setResumeContent(resumeContent);
+        // store resumeContent for later use when generating improved resume
+        if (analysis?.resumeContent) setResumeContent(analysis.resumeContent);
         router.push('/results');
         setAnalyzing(false);
         setButtonText("Analyze Resume");
       } catch (e) {
         setAnalyzing(false);
-        const message = e instanceof Error ? e.message : "Failed to analyze resume. Please try again.";
+        const message = e instanceof Error ? e.message : typeof e === "string" ? e : "Failed to analyze resume. Please try again.";
         router.push(`/error-page?message=${encodeURIComponent(message)}`);
       }
     } else {
@@ -103,7 +88,6 @@ export default function ResumeUpload({ onAnalysisComplete }: ResumeUploadProps) 
       setAnalyzing(true);
       setTimeout(() => {
         setAnalysis(mockATSAnalysis);
-        setResumeContent(mockResumeContent); // Does not exist yet, but can be added for testing purposes
         router.push('/results');
         setAnalyzing(false);
         setButtonText("Analyze Resume");

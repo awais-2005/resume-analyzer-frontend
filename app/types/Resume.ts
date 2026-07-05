@@ -137,6 +137,7 @@ export interface ResumeProject {
     description: string;
     toolsUsed?: string;      // generic: could be tech stack, software, methods, etc.
     link?: string;
+    github?: string;
     dates?: string;
     highlights?: string[];   // key outcomes / bullet points
     impact?: string;
