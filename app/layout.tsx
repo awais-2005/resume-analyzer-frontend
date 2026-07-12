@@ -19,7 +19,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body
         className={`${poppins.variable} font-sans bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100`}
       >
-        <SplashScreen />
+        {/* <SplashScreen /> */}
         {children}
       </body>
     </html>
