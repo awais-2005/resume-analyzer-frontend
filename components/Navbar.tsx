@@ -1,16 +1,24 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/hooks/useAuth";
 import Image from "next/image";
 import { History, Menu } from "lucide-react";
 import HistoryDrawer from "./HistoryDrawer";
 import { useHistoryStore } from "@/app/context/HistoryContext";
+import { useAnalysis, useResumeContent } from "@/app/context/AnalysisContext";
+import { fetchHistoryAnalysis } from "@/app/utils/serverRequests";
+import { TaskHistoryItem } from "@/app/types/Api";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
+  const [pendingTaskId, setPendingTaskId] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
   const { isLoggedIn, user, logout } = useAuth();
+  const router = useRouter();
+
   const items = useHistoryStore((state) => state.items);
   const isLoading = useHistoryStore((state) => state.isLoading);
   const error = useHistoryStore((state) => state.error);
@@ -20,6 +28,10 @@ export default function Navbar() {
   const loadHistory = useHistoryStore((state) => state.loadHistory);
   const setActiveTaskId = useHistoryStore((state) => state.setActiveTaskId);
   const closeTask = useHistoryStore((state) => state.closeTask);
+  const deleteTask = useHistoryStore((state) => state.deleteTask);
+
+  const setAnalysis = useAnalysis((state) => state.setAnalysis);
+  const setResumeContent = useResumeContent((state) => state.setResumeContent);
 
   useEffect(() => {
     hydrateHistory();
@@ -37,7 +49,60 @@ export default function Navbar() {
   };
 
   const toggleTask = (taskId: string) => {
+    setActionError(null);
     setActiveTaskId(activeTaskId === taskId ? null : taskId);
+  };
+
+  // Loads the stored analysis snapshot for a history item into the app's
+  // analysis/resumeContent stores and takes the user to the results page —
+  // this is what lets someone "continue" a past analysis without re-running
+  // it through Gemini.
+  const openStoredAnalysis = async (task: TaskHistoryItem) => {
+    setPendingTaskId(task.id);
+    setActionError(null);
+    try {
+      const analysis = await fetchHistoryAnalysis(task.id);
+      setAnalysis(analysis);
+      if (analysis.resumeContent) setResumeContent(analysis.resumeContent);
+      closeHistory();
+      router.push("/results");
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Couldn't load that analysis. Please try again.";
+      setActionError(message);
+    } finally {
+      setPendingTaskId(null);
+    }
+  };
+
+  // Smart "use history" action: if a fixed resume already exists, open it
+  // directly (that's the finished artifact). Otherwise fall back to
+  // reopening the stored analysis so the user can pick up where they left off.
+  const handleUseHistory = (task: TaskHistoryItem) => {
+    if (task.fixedResume) {
+      window.open(task.fixedResume, "_blank", "noopener,noreferrer");
+      return;
+    }
+    if (task.hasAnalysis) {
+      void openStoredAnalysis(task);
+    }
+  };
+
+  const handleViewAnalysis = (task: TaskHistoryItem) => {
+    if (!task.hasAnalysis) return;
+    void openStoredAnalysis(task);
+  };
+
+  const handleDeleteTask = async (task: TaskHistoryItem) => {
+    setPendingTaskId(task.id);
+    setActionError(null);
+    try {
+      await deleteTask(task.id);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Couldn't delete that item. Please try again.";
+      setActionError(message);
+    } finally {
+      setPendingTaskId(null);
+    }
   };
 
   return (
@@ -201,10 +266,15 @@ export default function Navbar() {
         loading={isLoading}
         error={error}
         activeTaskId={activeTaskId}
+        pendingTaskId={pendingTaskId}
+        actionError={actionError}
         onClose={closeHistory}
         handleRefresh={refreshHistory}
         onSelectTask={toggleTask}
         onCloseTask={closeTask}
+        onUseHistory={handleUseHistory}
+        onViewAnalysis={handleViewAnalysis}
+        onDeleteTask={handleDeleteTask}
       />
     </nav>
   );

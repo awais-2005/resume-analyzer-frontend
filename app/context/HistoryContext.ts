@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { fetchTaskHistory } from "../utils/serverRequests";
+import { deleteHistoryItem, fetchTaskHistory } from "../utils/serverRequests";
 import { TaskHistoryItem } from "../types/Api";
 
 const HISTORY_CACHE_KEY = "resume-ai-history-cache-v1";
@@ -15,6 +15,7 @@ interface HistoryState {
     loadHistory: () => Promise<void>;
     setActiveTaskId: (id: string | null) => void;
     closeTask: () => void;
+    deleteTask: (id: string) => Promise<void>;
 }
 
 const readCachedHistory = (): TaskHistoryItem[] => {
@@ -83,12 +84,24 @@ export const useHistoryStore = create<HistoryState>((set, get) => ({
         set({ isLoading: true, error: null });
         try {
             const history = await fetchTaskHistory();
-            console.log("Fetched history:", history);
             set({ items: history, isLoading: false, error: null });
             writeCachedHistory(history);
         } catch (error) {
             const message = error instanceof Error ? error.message : "Failed to refresh history.";
             set({ isLoading: false, error: message });
         }
+    },
+    deleteTask: async (id: string): Promise<void> => {
+        // Let the error bubble up to the caller (the UI shows it inline per-card),
+        // we only mutate state on success.
+        await deleteHistoryItem(id);
+        set((state) => {
+            const items = state.items.filter((item) => item.id !== id);
+            writeCachedHistory(items);
+            return {
+                items,
+                activeTaskId: state.activeTaskId === id ? null : state.activeTaskId,
+            };
+        });
     },
 }));

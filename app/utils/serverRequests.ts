@@ -86,13 +86,37 @@ export async function fetchTaskHistory(): Promise<TaskHistoryItem[]> {
     return response.data?.items ?? [];
 }
 
+// Fetch the saved analysis snapshot for a past history item, so it can be
+// reopened (viewed, or "used" to jump back into the fix/download flow)
+// without re-analyzing the resume.
+export async function fetchHistoryAnalysis(historyId: string): Promise<ResumeAnalysisWithHistory> {
+    const response = await fetchData<ResumeAnalysisWithHistory>(`/resume/history/${historyId}/analysis`);
+    return response.data;
+}
+
+// Permanently delete a history item.
+export async function deleteHistoryItem(historyId: string): Promise<void> {
+    const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+    const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/resume/history/${historyId}`, {
+        method: "DELETE",
+        headers: {
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => null);
+        throw new Error(`API call to /resume/history/${historyId} failed with status ${response.status}${errorData ? `, object: ${JSON.stringify(errorData)}` : ""}`);
+    }
+}
+
 export async function createResume(data: ResumeModel & { profileImage?: File }, templateId: string): Promise<SummaryAndBufferResponse> {
     const formData = new FormData();
     formData.append("templateId", templateId);
-    
+
     const { profileImage, ...resumeData } = data;
     formData.append("resumeData", JSON.stringify(resumeData));
-    
+
     if (profileImage) {
         formData.append("profileImage", profileImage);
     }

@@ -4,6 +4,9 @@ import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import MinimalNavBar from "@/components/MinimalNavBar";
+import googleIcon from "@/public/google.svg";
+import Image from "next/image";
+import LoginWithGoogle from "@/components/LoginWithGoogle";
 
 type AuthResponse = {
     success: boolean;
@@ -22,14 +25,6 @@ export default function LoginPage() {
     const [loading, setLoading] = useState(false);
 
     const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL ?? "";
-
-    const handleGoogleLogin = () => {
-        if (!serverUrl) {
-            setError("Server URL is not configured.");
-            return;
-        }
-        window.location.href = `${serverUrl}/auth/google`;
-    };
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -120,13 +115,7 @@ export default function LoginPage() {
                         <div className="h-px bg-gray-200 flex-1" />
                     </div>
 
-                    <button
-                        type="button"
-                        onClick={handleGoogleLogin}
-                        className="w-full rounded-xl border border-emerald-200 bg-white hover:bg-emerald-50 text-emerald-700 py-2.5 font-medium transition-colors"
-                    >
-                        Sign in with Google
-                    </button>
+                    <LoginWithGoogle />
 
                     <p className="mt-6 text-sm text-gray-600 text-center">
                         New to Resumlyze?{" "}
