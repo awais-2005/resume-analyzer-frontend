@@ -1,6 +1,13 @@
+import { useState } from "react";
+import Banner from "./Banner";
+
 export default function HeroSection() {
+  const [bannerMessage, setBannerMessage] = useState("");
+  const [showBanner, setShowBanner] = useState(false);
+  const [isError, setIsError] = useState(false);
   return (
     <section className="bg-linear-to-br from-white via-emerald-50/40 to-white -mt-12 py-20 lg:py-28">
+      {showBanner && (<Banner title={bannerMessage} isError={isError} />)}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto">
           {/* Badge */}
@@ -26,12 +33,23 @@ export default function HeroSection() {
             >
               Analyze My Resume
             </a>
-            <a
-              href="/create"
+            <button
+              onClick={() => {
+                setBannerMessage("This feature is not available yet.");
+                setIsError(true);
+                setShowBanner(true);
+
+                setTimeout(() => {
+                  setShowBanner(false);
+                  setBannerMessage("");
+                  setIsError(false);
+                }, 3000);
+                //window.location.href = "/create";
+              }}
               className="bg-white hover:bg-emerald-50 text-emerald-700 border border-emerald-200 px-8 py-3.5 rounded-xl text-base font-semibold transition-all"
             >
               Create New Resume
-            </a>
+            </button>
           </div>
 
           {/* Stats */}

@@ -9,15 +9,6 @@ import Footer from "@/components/Footer";
 export default function Home() {
   return (
     <div className="min-h-screen bg-white">
-      {/* <button
-        className="fixed top-4 right-4 z-50 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
-        onClick={() => {
-          const token = localStorage.getItem("token");
-          console.log("Token:", token);
-        }}
-      >
-        Log Token
-      </button> */}
       <Navbar />
       <HeroSection />
       <Features />
