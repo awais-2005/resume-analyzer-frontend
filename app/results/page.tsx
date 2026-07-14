@@ -14,7 +14,7 @@ function ApplyToggle({ apply, onToggle }: { apply: boolean; onToggle: () => void
       onClick={onToggle}
       title={apply ? "Approved — click to undo" : "Click to approve this suggestion"}
       className={`flex items-center ml-auto gap-1.5 px-2.5 py-1 rounded-full text-[0.65rem] sm:text-xs font-semibold
-        border transition-all duration-200 shrink-0 select-none z-50
+        border transition-all duration-200 shrink-0 select-none z-10
         ${apply
           ? "bg-emerald-50 border-emerald-300 text-emerald-700 shadow-sm"
           : "bg-gray-50 border-gray-200 text-gray-400 hover:border-emerald-300 hover:text-emerald-600 hover:bg-emerald-50"
@@ -24,20 +24,6 @@ function ApplyToggle({ apply, onToggle }: { apply: boolean; onToggle: () => void
       <span className={`w-1.5 h-1.5 rounded-full transition-colors ${apply ? "bg-emerald-500" : "bg-gray-300"}`} />
       {apply ? "Approved" : "Approve"}
     </button>
-  );
-}
-
-// ─── Section Header ───────────────────────────────────────────────────────────
-function SectionHeader({ title, approved, total }: { title: string; approved: number; total: number }) {
-  return (
-    <div className="flex items-center gap-3">
-      <h3 className="text-lg font-bold text-gray-900">{title}</h3>
-      {total > 0 && (
-        <span className="flex shrink-0 text-xs text-gray-400 font-medium">
-          <span className="text-emerald-600 font-semibold">{approved}</span> / {total} approved
-        </span>
-      )}
-    </div>
   );
 }
 
@@ -57,6 +43,25 @@ function ApproveAllButton({ allApproved, onToggleAll }: { allApproved: boolean; 
     </button>
   );
 }
+
+// ─── Section Header ───────────────────────────────────────────────────────────
+function SectionHeader({ title, approved, total, approvedAll, onToggleAll }: { title: string; approved: number; total: number; approvedAll: boolean; onToggleAll: () => void }) {
+  return (
+    <div className="flex w-full flex-col gap-3">
+      <h3 className="text-lg font-bold text-gray-900">{title}</h3>
+      <div className="flex w-full flex-row justify-between items-center px-5">
+        {total > 0 && (
+          <span className="flex shrink-0 text-xs text-gray-400 font-medium">
+            <span className="text-emerald-600 font-semibold">{approved}</span> / {total} approved
+          </span>
+        )}
+        <ApproveAllButton allApproved={approvedAll} onToggleAll={onToggleAll} />
+
+      </div>
+    </div>
+  );
+}
+
 
 // ─── Main Page ────────────────────────────────────────────────────────────────
 export default function ResultsPage() {
@@ -312,9 +317,7 @@ export default function ResultsPage() {
                   title="Impact Upgrades"
                   approved={approvedCount(result.impactUpgrades)}
                   total={result.impactUpgrades.length}
-                />
-                <ApproveAllButton
-                  allApproved={allApproved(result.impactUpgrades)}
+                  approvedAll={allApproved(result.impactUpgrades)}
                   onToggleAll={() => toggleAll("impactUpgrades", !allApproved(result.impactUpgrades))}
                 />
               </div>
@@ -347,9 +350,7 @@ export default function ResultsPage() {
                   title="Grammar Issues"
                   approved={approvedCount(result.grammarIssues)}
                   total={result.grammarIssues.length}
-                />
-                <ApproveAllButton
-                  allApproved={allApproved(result.grammarIssues)}
+                  approvedAll={allApproved(result.grammarIssues)}
                   onToggleAll={() => toggleAll("grammarIssues", !allApproved(result.grammarIssues))}
                 />
               </div>
@@ -397,9 +398,7 @@ export default function ResultsPage() {
                   title="Creativity Boosts"
                   approved={approvedCount(result.creativityBoosts)}
                   total={result.creativityBoosts.length}
-                />
-                <ApproveAllButton
-                  allApproved={allApproved(result.creativityBoosts)}
+                  approvedAll={allApproved(result.creativityBoosts)}
                   onToggleAll={() => toggleAll("creativityBoosts", !allApproved(result.creativityBoosts))}
                 />
               </div>
@@ -432,9 +431,7 @@ export default function ResultsPage() {
                   title="Red Flags"
                   approved={approvedCount(result.redFlags)}
                   total={result.redFlags.length}
-                />
-                <ApproveAllButton
-                  allApproved={allApproved(result.redFlags)}
+                  approvedAll={allApproved(result.redFlags)}
                   onToggleAll={() => toggleAll("redFlags", !allApproved(result.redFlags))}
                 />
               </div>
@@ -484,9 +481,7 @@ export default function ResultsPage() {
                   title="Keyword Suggestions"
                   approved={approvedCount(result.keywordSuggestions)}
                   total={result.keywordSuggestions.length}
-                />
-                <ApproveAllButton
-                  allApproved={allApproved(result.keywordSuggestions)}
+                  approvedAll={allApproved(result.keywordSuggestions)}
                   onToggleAll={() => toggleAll("keywordSuggestions", !allApproved(result.keywordSuggestions))}
                 />
               </div>
@@ -521,9 +516,7 @@ export default function ResultsPage() {
                   title="Formatting Tips"
                   approved={approvedCount(result.formattingTips)}
                   total={result.formattingTips.length}
-                />
-                <ApproveAllButton
-                  allApproved={allApproved(result.formattingTips)}
+                  approvedAll={allApproved(result.formattingTips)}
                   onToggleAll={() => toggleAll("formattingTips", !allApproved(result.formattingTips))}
                 />
               </div>
