@@ -12,31 +12,22 @@ import { mockDocxBuffer, mockPolishSummary } from "@/tests/mock";
 
 export default function DownloadPage() {
 
-    const mockTest = false;
     const searchParams = useSearchParams();
-    const templateId = searchParams.get("template") || "temp3";
+    const templateId = searchParams.get("template");
 
     const getResumeBuffer = useCallback((): ResumeBuffer | null => {
         if (typeof window === "undefined") return null;
 
-        if (mockTest) return {
-            type: "Buffer",
-            mimeType: "docx",
-            data: mockDocxBuffer,
-        };
-
         const bufferStr = localStorage.getItem('buffer');
         return bufferStr ? JSON.parse(bufferStr) as ResumeBuffer : null;
-    }, [mockTest]);
+    }, []);
 
     const getSummary = useCallback((): PolishSummary | null => {
         if (typeof window === "undefined") return null;
 
-        if (mockTest) return mockPolishSummary;
-
         const summaryStr = localStorage.getItem('summary');
         return summaryStr ? JSON.parse(summaryStr) : null;
-    }, [mockTest]);
+    }, []);
 
     const { analysis } = useAnalysis();
     const { resumeContent } = useResumeContent();
@@ -57,16 +48,11 @@ export default function DownloadPage() {
 
     useEffect(() => {
         ; (async function () {
-            if (mockTest) {
-                setLoading(true);
-                setTimeout(() => {
-                    setLoading(false);
-                }, 2000);
-            }
 
-            if (!resumeContent || !analysis) {
+            if (!resumeContent || !analysis || !templateId) {
                 return;
             }
+
             setLoading(true);
             try {
                 start.current = Date.now();
@@ -81,7 +67,7 @@ export default function DownloadPage() {
                 setLoading(false);
             }
         })();
-    }, [analysis, mockTest, resumeContent, templateId]);
+    }, [analysis, resumeContent, templateId]);
 
     const downloadPDF = () => {
         if (!resumeBuffer) return;
