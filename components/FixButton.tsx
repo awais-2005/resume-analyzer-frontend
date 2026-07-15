@@ -9,7 +9,11 @@ export function FixButton() {
 
   return (
     <button
-      onClick={() => router.push("/fix")}
+      onClick={() => {
+        localStorage.removeItem("buffer");
+        localStorage.removeItem("summary");
+        router.push("/fix")
+      }}
       className="group flex items-center gap-2.5 px-5 py-2.5 rounded-full
         bg-emerald-600 hover:bg-emerald-700 text-white
         shadow-lg shadow-emerald-200 hover:shadow-xl hover:shadow-emerald-300

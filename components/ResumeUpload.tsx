@@ -75,6 +75,7 @@ export default function ResumeUpload({ onAnalysisComplete }: ResumeUploadProps) 
         setAnalysis(analysis);
         // store resumeContent for later use when generating improved resume
         if (analysis?.resumeContent) setResumeContent(analysis.resumeContent);
+        localStorage.removeItem("result");
         router.push('/results');
         setAnalyzing(false);
         setButtonText("Analyze Resume");
